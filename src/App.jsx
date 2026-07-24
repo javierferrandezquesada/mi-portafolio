@@ -42,7 +42,7 @@ const SKILLS = [
   {
     group: "Frontend",
     icon: Code2,
-    items: ["React", "JavaScript", "HTML5", "CSS3", "Tailwind CSS", "Bootstrap"],
+    items: ["React", "JavaScript", "HTML5", "CSS3", "Tailwind CSS"],
   },
   {
     group: "CMS & E-commerce",
@@ -59,7 +59,7 @@ const SKILLS = [
 const EXPERIENCE = [
   {
     range: "05/2026 — 05/2026",
-    role: "Programador Web Freelance",
+    role: "Programador Web",
     org: "Roberto Berná Larrosa",
     desc: "Maquetación y desarrollo de una aplicación web interactiva con React, de principio a fin, en colaboración directa con el cliente.",
   },
@@ -153,7 +153,7 @@ function Navbar({ active }) {
       initial={{ y: -40, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
       transition={{ duration: 0.6, ease: "easeOut" }}
-      className="fixed top-4 left-1/2 -translate-x-1/2 z-50 w-[calc(100%-1.5rem)] sm:w-auto"
+      className="fixed top-4 left-1/2 -translate-x-1/2 z-50 w-max max-w-[calc(100%-1.5rem)]"
     >
       <div
         className={`flex items-center justify-between gap-6 rounded-2xl border border-white/10 px-4 sm:px-5 py-2.5 backdrop-blur-xl transition-colors ${
@@ -167,7 +167,7 @@ function Navbar({ active }) {
           <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-cyan-400/10 text-cyan-400 border border-cyan-400/20">
             <Terminal size={14} />
           </span>
-          <span className="hidden sm:inline">
+          <span>
             javier<span className="text-cyan-400">.</span>dev
           </span>
         </button>
@@ -323,14 +323,6 @@ function Hero() {
                 className="transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
               />
             </button>
-            <a
-              href="#"
-              download
-              className="inline-flex items-center gap-2 px-5 py-3 rounded-xl border border-white/15 text-slate-200 hover:bg-white/5 transition-colors font-medium"
-            >
-              <Download size={16} />
-              Descargar CV
-            </a>
           </motion.div>
 
           <motion.div
@@ -410,31 +402,33 @@ function About() {
   return (
     <section id="sobre-mi" className="px-6 py-28 sm:py-36">
       <div className="max-w-5xl mx-auto">
-        <Reveal>
-          <SectionHeading
-            index="01"
-            eyebrow="sobre-mí"
-            title="De la sala de soporte al código en producción."
-          />
-        </Reveal>
-
-        <div className="grid md:grid-cols-5 gap-12">
-          <Reveal className="md:col-span-3" delay={0.1}>
-            <p className="text-lg text-slate-300 leading-relaxed">
-              Soy un desarrollador web joven, cercano y con muchas ganas de
-              seguir creciendo. Mi camino empezó en el soporte de sistemas —
-              lidiando con usuarios, redes y Active Directory — y hoy se
-              centra en construir interfaces con React y Tailwind CSS.
-            </p>
-            <p className="mt-5 text-lg text-slate-300 leading-relaxed">
-              Esa mezcla me da una ventaja poco habitual: entiendo tanto la
-              lógica detrás de un sistema como la experiencia de quien lo usa
-              en pantalla. Actualmente compagino esta pasión con mis estudios
-              de DAM, siempre con un proyecto entre manos.
-            </p>
+        <div className="grid md:grid-cols-5 gap-12 items-start">
+          
+          {/* Columna izquierda: Título + Textos */}
+          <Reveal className="md:col-span-3">
+            <SectionHeading
+              index="01"
+              eyebrow="sobre-mí"
+              title="De la sala de soporte al código en producción."
+            />
+            <div className="space-y-5 -mt-6">
+              <p className="text-lg text-slate-300 leading-relaxed">
+                Soy un desarrollador web joven, cercano y con muchas ganas de
+                seguir creciendo. Mi camino empezó en el soporte de sistemas —
+                lidiando con usuarios, redes y Active Directory — y hoy se
+                centra en construir páginas web modernas.
+              </p>
+              <p className="text-lg text-slate-300 leading-relaxed">
+                Esa mezcla me da una ventaja poco habitual: entiendo tanto la
+                lógica detrás de un sistema como la experiencia de quien lo usa
+                en pantalla. Actualmente compagino esta pasión con mis estudios
+                de DAM, siempre con un proyecto entre manos.
+              </p>
+            </div>
           </Reveal>
 
-          <div className="md:col-span-2 grid gap-4">
+          {/* Columna derecha: Bloques subidos para alinear con el título */}
+          <div className="md:col-span-2 grid gap-4 md:pt-8">
             {points.map((p, i) => (
               <Reveal key={p.title} delay={0.15 + i * 0.08}>
                 <div className="flex gap-4 p-4 rounded-xl border border-white/10 bg-white/[0.02] hover:border-cyan-400/30 transition-colors">
@@ -451,6 +445,7 @@ function About() {
               </Reveal>
             ))}
           </div>
+
         </div>
       </div>
     </section>
@@ -467,7 +462,6 @@ const ICONS_MAP = {
   HTML5: Code2,
   CSS3: Palette,
   "Tailwind CSS": Palette,
-  Bootstrap: LayoutTemplate,
   WordPress: LayoutTemplate,
   Shopify: ShoppingBag,
   PrestaShop: ShoppingBag,
@@ -551,7 +545,7 @@ function ProjectsSoon() {
                 Proyectos en desarrollo
               </h3>
               <p className="max-w-md text-slate-400 leading-relaxed">
-                Estoy construyendo varias aplicaciones en React para
+                Estoy construyendo varias aplicaciones web para
                 publicarlas próximamente en mi GitHub. Vuelve pronto o sígueme
                 para no perderte las novedades.
               </p>
