@@ -156,23 +156,24 @@ function Navbar({ active }) {
       className="fixed top-4 left-1/2 -translate-x-1/2 z-50 w-max max-w-[calc(100%-1.5rem)]"
     >
       <div
-        className={`flex items-center justify-between gap-6 rounded-2xl border border-white/10 px-4 sm:px-5 py-2.5 backdrop-blur-xl transition-colors ${
+        className={`flex items-center justify-between gap-4 sm:gap-6 rounded-2xl border border-white/10 px-3.5 sm:px-5 py-2.5 backdrop-blur-xl transition-colors ${
           scrolled ? "bg-slate-950/80" : "bg-slate-950/50"
         }`}
       >
         <button
           onClick={() => scrollTo("inicio")}
-          className="flex items-center gap-2 font-mono text-sm text-slate-200 shrink-0"
+          className="flex items-center gap-2 font-mono text-xs sm:text-sm text-slate-200 shrink-0"
         >
           <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-cyan-400/10 text-cyan-400 border border-cyan-400/20">
             <Terminal size={14} />
           </span>
           <span>
-            javier<span className="text-cyan-400">.</span>dev
+            javier<span className="hidden sm:inline">ferrandez</span>
+            <span className="text-cyan-400">.</span>dev
           </span>
         </button>
 
-        <nav className="hidden md:flex items-center gap-1">
+        <nav className="hidden lg:flex items-center gap-1">
           {NAV_LINKS.map((l) => (
             <button
               key={l.id}
@@ -194,7 +195,7 @@ function Navbar({ active }) {
           ))}
         </nav>
 
-        <div className="hidden md:block">
+        <div className="hidden lg:block">
           <button
             onClick={() => scrollTo("contacto")}
             className="text-sm font-medium px-4 py-1.5 rounded-lg bg-gradient-to-r from-cyan-400 to-blue-500 text-slate-950 hover:brightness-110 transition-all shadow-[0_0_20px_-6px_rgba(34,211,238,0.6)]"
@@ -204,7 +205,7 @@ function Navbar({ active }) {
         </div>
 
         <button
-          className="md:hidden text-slate-300"
+          className="lg:hidden text-slate-300 p-1"
           onClick={() => setOpen((o) => !o)}
           aria-label="Abrir menú"
         >
@@ -218,7 +219,7 @@ function Navbar({ active }) {
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: "auto" }}
             exit={{ opacity: 0, height: 0 }}
-            className="md:hidden mt-2 overflow-hidden rounded-2xl border border-white/10 bg-slate-950/95 backdrop-blur-xl"
+            className="lg:hidden mt-2 overflow-hidden rounded-2xl border border-white/10 bg-slate-950/95 backdrop-blur-xl"
           >
             <div className="flex flex-col p-2">
               {NAV_LINKS.map((l) => (
@@ -661,11 +662,36 @@ function Education() {
 function Contact({ onOpenLegal }) {
   const [accepted, setAccepted] = useState(false);
   const [sent, setSent] = useState(false);
+  const [loading, setLoading] = useState(false);
 
-  const submit = (e) => {
+  const FORMSPREE_CODE = "mrenoone";
+
+  const submit = async (e) => {
     e.preventDefault();
-    if (!accepted) return;
-    setSent(true);
+    if (!accepted || loading) return;
+
+    setLoading(true);
+    const formData = new FormData(e.currentTarget);
+
+    try {
+      const response = await fetch(`https://formspree.io/f/${FORMSPREE_CODE}`, {
+        method: "POST",
+        body: formData,
+        headers: {
+          Accept: "application/json",
+        },
+      });
+
+      if (response.ok) {
+        setSent(true);
+      } else {
+        alert("Hubo un problema al enviar el mensaje. Inténtalo de nuevo.");
+      }
+    } catch (error) {
+      alert("Error de conexión al enviar el mensaje.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -764,6 +790,7 @@ function Contact({ onOpenLegal }) {
                       </label>
                       <input
                         required
+                        name="name"
                         type="text"
                         placeholder="Tu nombre"
                         className="w-full rounded-lg bg-white/[0.03] border border-white/10 px-3.5 py-2.5 text-sm text-slate-200 placeholder:text-slate-600 focus:outline-none focus:border-cyan-400/50 focus:ring-1 focus:ring-cyan-400/30"
@@ -775,6 +802,7 @@ function Contact({ onOpenLegal }) {
                       </label>
                       <input
                         required
+                        name="email"
                         type="email"
                         placeholder="tu@email.com"
                         className="w-full rounded-lg bg-white/[0.03] border border-white/10 px-3.5 py-2.5 text-sm text-slate-200 placeholder:text-slate-600 focus:outline-none focus:border-cyan-400/50 focus:ring-1 focus:ring-cyan-400/30"
@@ -787,6 +815,7 @@ function Contact({ onOpenLegal }) {
                     </label>
                     <textarea
                       required
+                      name="message"
                       rows={4}
                       placeholder="Cuéntame en qué puedo ayudarte..."
                       className="w-full rounded-lg bg-white/[0.03] border border-white/10 px-3.5 py-2.5 text-sm text-slate-200 placeholder:text-slate-600 focus:outline-none focus:border-cyan-400/50 focus:ring-1 focus:ring-cyan-400/30 resize-none"
@@ -817,10 +846,10 @@ function Contact({ onOpenLegal }) {
 
                   <button
                     type="submit"
-                    disabled={!accepted}
+                    disabled={!accepted || loading}
                     className="justify-self-start inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-cyan-400 to-blue-500 text-slate-950 font-medium hover:brightness-110 disabled:opacity-40 disabled:cursor-not-allowed transition-all"
                   >
-                    Enviar mensaje
+                    {loading ? "Enviando..." : "Enviar mensaje"}
                     <ChevronRight size={16} />
                   </button>
                 </>
