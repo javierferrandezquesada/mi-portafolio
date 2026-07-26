@@ -5,7 +5,6 @@ import {
   X,
   Mail,
   MapPin,
-  Download,
   ArrowUpRight,
   Terminal,
   Code2,
@@ -105,13 +104,13 @@ function Eyebrow({ index, label }) {
 
 function SectionHeading({ index, eyebrow, title, sub }) {
   return (
-    <div className="mb-14 max-w-2xl">
+    <header className="mb-14 max-w-2xl">
       <Eyebrow index={index} label={eyebrow} />
       <h2 className="text-3xl sm:text-4xl font-semibold tracking-tight text-slate-100">
         {title}
       </h2>
       {sub && <p className="mt-4 text-slate-400 leading-relaxed">{sub}</p>}
-    </div>
+    </header>
   );
 }
 
@@ -162,10 +161,11 @@ function Navbar({ active }) {
       >
         <button
           onClick={() => scrollTo("inicio")}
-          className="flex items-center gap-2 font-mono text-xs sm:text-sm text-slate-200 shrink-0"
+          aria-label="Ir al inicio del portafolio"
+          className="flex items-center gap-2 font-mono text-xs sm:text-sm text-slate-200 shrink-0 focus:outline-none focus:ring-2 focus:ring-cyan-400/50 rounded-lg"
         >
           <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-cyan-400/10 text-cyan-400 border border-cyan-400/20">
-            <Terminal size={14} />
+            <Terminal size={14} aria-hidden="true" />
           </span>
           <span>
             javier<span className="hidden sm:inline">ferrandez</span>
@@ -173,26 +173,30 @@ function Navbar({ active }) {
           </span>
         </button>
 
-        <nav className="hidden lg:flex items-center gap-1">
-          {NAV_LINKS.map((l) => (
-            <button
-              key={l.id}
-              onClick={() => scrollTo(l.id)}
-              className={`relative px-3 py-1.5 text-sm rounded-lg transition-colors ${
-                active === l.id
-                  ? "text-cyan-300"
-                  : "text-slate-400 hover:text-slate-100"
-              }`}
-            >
-              {l.label}
-              {active === l.id && (
-                <motion.span
-                  layoutId="nav-dot"
-                  className="absolute -bottom-0.5 left-1/2 -translate-x-1/2 h-1 w-1 rounded-full bg-cyan-400"
-                />
-              )}
-            </button>
-          ))}
+        <nav aria-label="Navegación principal" className="hidden lg:flex items-center gap-1">
+          {NAV_LINKS.map((l) => {
+            const isActive = active === l.id;
+            return (
+              <button
+                key={l.id}
+                onClick={() => scrollTo(l.id)}
+                aria-current={isActive ? "page" : undefined}
+                className={`relative px-3 py-1.5 text-sm rounded-lg transition-colors ${
+                  isActive
+                    ? "text-cyan-300"
+                    : "text-slate-400 hover:text-slate-100"
+                }`}
+              >
+                {l.label}
+                {isActive && (
+                  <motion.span
+                    layoutId="nav-dot"
+                    className="absolute -bottom-0.5 left-1/2 -translate-x-1/2 h-1 w-1 rounded-full bg-cyan-400"
+                  />
+                )}
+              </button>
+            );
+          })}
         </nav>
 
         <div className="hidden lg:block">
@@ -205,11 +209,12 @@ function Navbar({ active }) {
         </div>
 
         <button
-          className="lg:hidden text-slate-300 p-1"
+          className="lg:hidden text-slate-300 p-1 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-400/50"
           onClick={() => setOpen((o) => !o)}
-          aria-label="Abrir menú"
+          aria-expanded={open}
+          aria-label={open ? "Cerrar menú de navegación" : "Abrir menú de navegación"}
         >
-          {open ? <X size={20} /> : <Menu size={20} />}
+          {open ? <X size={20} aria-hidden="true" /> : <Menu size={20} aria-hidden="true" />}
         </button>
       </div>
 
@@ -221,11 +226,12 @@ function Navbar({ active }) {
             exit={{ opacity: 0, height: 0 }}
             className="lg:hidden mt-2 overflow-hidden rounded-2xl border border-white/10 bg-slate-950/95 backdrop-blur-xl"
           >
-            <div className="flex flex-col p-2">
+            <nav aria-label="Navegación móvil" className="flex flex-col p-2">
               {NAV_LINKS.map((l) => (
                 <button
                   key={l.id}
                   onClick={() => scrollTo(l.id)}
+                  aria-current={active === l.id ? "page" : undefined}
                   className="text-left px-4 py-2.5 text-sm text-slate-300 hover:text-cyan-300 rounded-lg hover:bg-white/5"
                 >
                   {l.label}
@@ -237,7 +243,7 @@ function Navbar({ active }) {
               >
                 Contactar
               </button>
-            </div>
+            </nav>
           </motion.div>
         )}
       </AnimatePresence>
@@ -266,6 +272,7 @@ function Hero() {
   return (
     <section
       id="inicio"
+      aria-label="Presentación principal"
       className="relative min-h-screen flex items-center pt-32 pb-20 px-6 overflow-hidden"
     >
       <div className="relative max-w-5xl mx-auto w-full grid gap-14">
@@ -275,8 +282,8 @@ function Hero() {
           transition={{ duration: 0.6 }}
           className="font-mono text-cyan-400 text-sm flex items-center gap-2"
         >
-          <CircleDot size={14} className="animate-pulse" />
-          Hola, soy Javier 👋
+          <CircleDot size={14} className="animate-pulse" aria-hidden="true" />
+          <span>Hola, soy Javier 👋</span>
         </motion.p>
 
         <div>
@@ -286,6 +293,7 @@ function Hero() {
             transition={{ duration: 0.7, delay: 0.1 }}
             className="text-[2.6rem] leading-[1.05] sm:text-6xl md:text-7xl font-semibold tracking-tight text-slate-100"
           >
+            <span className="sr-only">Javier Ferrández — Programador Web. </span>
             Construyo interfaces
             <br />
             <span className="bg-gradient-to-r from-cyan-300 via-cyan-400 to-blue-500 bg-clip-text text-transparent">
@@ -321,26 +329,28 @@ function Hero() {
               Contactar
               <ArrowUpRight
                 size={16}
+                aria-hidden="true"
                 className="transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
               />
             </button>
           </motion.div>
 
-          <motion.div
+          <motion.ul
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.7, delay: 0.45 }}
+            aria-label="Tecnologías destacadas"
             className="mt-10 flex flex-wrap gap-2"
           >
             {HERO_BADGES.map((b) => (
-              <span
+              <li
                 key={b}
                 className="font-mono text-xs px-3 py-1.5 rounded-full border border-white/10 text-slate-400 bg-white/[0.03]"
               >
                 {b}
-              </span>
+              </li>
             ))}
-          </motion.div>
+          </motion.ul>
         </div>
 
         {/* terminal card */}
@@ -348,7 +358,8 @@ function Hero() {
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.4 }}
-          className="w-full max-w-lg rounded-2xl border border-white/10 bg-slate-900/60 backdrop-blur-sm overflow-hidden shadow-2xl"
+          aria-hidden="true"
+          className="w-full max-w-lg rounded-2xl border border-white/10 bg-slate-900/60 backdrop-blur-sm overflow-hidden shadow-2xl select-none"
         >
           <div className="flex items-center gap-1.5 px-4 py-3 border-b border-white/10 bg-slate-900/80">
             <span className="h-2.5 w-2.5 rounded-full bg-red-400/70" />
@@ -401,7 +412,7 @@ function About() {
   ];
 
   return (
-    <section id="sobre-mi" className="px-6 py-28 sm:py-36">
+    <section id="sobre-mi" aria-label="Sobre mí" className="px-6 py-28 sm:py-36">
       <div className="max-w-5xl mx-auto">
         <div className="grid md:grid-cols-5 gap-12 items-start">
           
@@ -428,24 +439,24 @@ function About() {
             </div>
           </Reveal>
 
-          {/* Columna derecha: Bloques subidos para alinear con el título */}
-          <div className="md:col-span-2 grid gap-4 md:pt-8">
+          {/* Columna derecha: Bloques de puntos fuertes */}
+          <ul className="md:col-span-2 grid gap-4 md:pt-8">
             {points.map((p, i) => (
               <Reveal key={p.title} delay={0.15 + i * 0.08}>
-                <div className="flex gap-4 p-4 rounded-xl border border-white/10 bg-white/[0.02] hover:border-cyan-400/30 transition-colors">
+                <li className="flex gap-4 p-4 rounded-xl border border-white/10 bg-white/[0.02] hover:border-cyan-400/30 transition-colors">
                   <span className="shrink-0 flex h-10 w-10 items-center justify-center rounded-lg bg-cyan-400/10 text-cyan-400">
-                    <p.icon size={18} />
+                    <p.icon size={18} aria-hidden="true" />
                   </span>
                   <div>
-                    <p className="text-slate-100 font-medium">{p.title}</p>
+                    <h3 className="text-slate-100 font-medium">{p.title}</h3>
                     <p className="text-sm text-slate-500 mt-1 leading-relaxed">
                       {p.desc}
                     </p>
                   </div>
-                </div>
+                </li>
               </Reveal>
             ))}
-          </div>
+          </ul>
 
         </div>
       </div>
@@ -474,7 +485,7 @@ const ICONS_MAP = {
 
 function Skills() {
   return (
-    <section id="habilidades" className="px-6 py-28 sm:py-36 bg-white/[0.015]">
+    <section id="habilidades" aria-label="Habilidades técnicas" className="px-6 py-28 sm:py-36 bg-white/[0.015]">
       <div className="max-w-5xl mx-auto">
         <Reveal>
           <SectionHeading
@@ -488,32 +499,32 @@ function Skills() {
         <div className="grid md:grid-cols-3 gap-6">
           {SKILLS.map((group, gi) => (
             <Reveal key={group.group} delay={gi * 0.1}>
-              <motion.div
+              <motion.article
                 whileHover={{ y: -4 }}
                 transition={{ type: "spring", stiffness: 300, damping: 20 }}
                 className="h-full rounded-2xl border border-white/10 bg-slate-900/40 p-6"
               >
                 <div className="flex items-center gap-3 mb-6">
                   <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-gradient-to-br from-cyan-400/20 to-blue-500/20 text-cyan-300 border border-cyan-400/20">
-                    <group.icon size={17} />
+                    <group.icon size={17} aria-hidden="true" />
                   </span>
                   <h3 className="text-slate-100 font-medium">{group.group}</h3>
                 </div>
-                <div className="flex flex-wrap gap-2">
+                <ul className="flex flex-wrap gap-2" aria-label={`Tecnologías de ${group.group}`}>
                   {group.items.map((item) => {
                     const Icon = ICONS_MAP[item] || Boxes;
                     return (
-                      <span
+                      <li
                         key={item}
                         className="inline-flex items-center gap-1.5 text-xs font-mono px-2.5 py-1.5 rounded-lg border border-white/10 text-slate-400 hover:text-cyan-300 hover:border-cyan-400/30 transition-colors"
                       >
-                        <Icon size={12} />
-                        {item}
-                      </span>
+                        <Icon size={12} aria-hidden="true" />
+                        <span>{item}</span>
+                      </li>
                     );
                   })}
-                </div>
-              </motion.div>
+                </ul>
+              </motion.article>
             </Reveal>
           ))}
         </div>
@@ -528,7 +539,7 @@ function Skills() {
 
 function ProjectsSoon() {
   return (
-    <section className="px-6 py-28 sm:py-36">
+    <section id="proyectos" aria-label="Proyectos" className="px-6 py-28 sm:py-36">
       <div className="max-w-5xl mx-auto">
         <Reveal>
           <Eyebrow index="—" label="proyectos" />
@@ -540,11 +551,11 @@ function ProjectsSoon() {
 
             <div className="relative flex flex-col items-center gap-5">
               <span className="flex h-14 w-14 items-center justify-center rounded-2xl bg-cyan-400/10 border border-cyan-400/20 text-cyan-300">
-                <Boxes size={24} />
+                <Boxes size={24} aria-hidden="true" />
               </span>
-              <h3 className="text-2xl sm:text-3xl font-semibold text-slate-100">
+              <h2 className="text-2xl sm:text-3xl font-semibold text-slate-100">
                 Proyectos en desarrollo
-              </h3>
+              </h2>
               <p className="max-w-md text-slate-400 leading-relaxed">
                 Estoy construyendo varias aplicaciones web para
                 publicarlas próximamente en mi GitHub. Vuelve pronto o sígueme
@@ -556,8 +567,8 @@ function ProjectsSoon() {
                 rel="noopener noreferrer"
                 className="mt-2 inline-flex items-center gap-2 px-5 py-3 rounded-xl bg-gradient-to-r from-cyan-400 to-blue-500 text-slate-950 font-medium hover:brightness-110 transition-all"
               >
-                <Github size={16} />
-                Ver perfil de GitHub
+                <Github size={16} aria-hidden="true" />
+                <span>Ver perfil de GitHub</span>
               </a>
             </div>
           </div>
@@ -575,23 +586,23 @@ function Timeline({ items, renderItem }) {
   return (
     <div className="relative pl-8">
       <div className="absolute left-[7px] top-2 bottom-2 w-px bg-gradient-to-b from-cyan-400/60 via-white/10 to-transparent" />
-      <div className="grid gap-10">
+      <ol className="grid gap-10">
         {items.map((item, i) => (
           <Reveal key={i} delay={i * 0.12}>
-            <div className="relative">
+            <li className="relative">
               <span className="absolute -left-[35px] top-1.5 h-3.5 w-3.5 rounded-full bg-slate-950 border-2 border-cyan-400" />
               {renderItem(item)}
-            </div>
+            </li>
           </Reveal>
         ))}
-      </div>
+      </ol>
     </div>
   );
 }
 
 function Experience() {
   return (
-    <section id="experiencia" className="px-6 py-28 sm:py-36 bg-white/[0.015]">
+    <section id="experiencia" aria-label="Experiencia laboral" className="px-6 py-28 sm:py-36 bg-white/[0.015]">
       <div className="max-w-4xl mx-auto">
         <Reveal>
           <SectionHeading
@@ -603,7 +614,7 @@ function Experience() {
         <Timeline
           items={EXPERIENCE}
           renderItem={(item) => (
-            <div className="rounded-xl border border-white/10 bg-slate-900/40 p-5 hover:border-cyan-400/30 transition-colors">
+            <article className="rounded-xl border border-white/10 bg-slate-900/40 p-5 hover:border-cyan-400/30 transition-colors">
               <span className="font-mono text-xs text-cyan-400">
                 {item.range}
               </span>
@@ -612,7 +623,7 @@ function Experience() {
               <p className="mt-3 text-sm text-slate-400 leading-relaxed">
                 {item.desc}
               </p>
-            </div>
+            </article>
           )}
         />
       </div>
@@ -622,7 +633,7 @@ function Experience() {
 
 function Education() {
   return (
-    <section id="formacion" className="px-6 py-28 sm:py-36">
+    <section id="formacion" aria-label="Formación académica" className="px-6 py-28 sm:py-36">
       <div className="max-w-4xl mx-auto">
         <Reveal>
           <SectionHeading
@@ -634,7 +645,7 @@ function Education() {
         <Timeline
           items={EDUCATION}
           renderItem={(item) => (
-            <div className="rounded-xl border border-white/10 bg-slate-900/40 p-5 hover:border-cyan-400/30 transition-colors">
+            <article className="rounded-xl border border-white/10 bg-slate-900/40 p-5 hover:border-cyan-400/30 transition-colors">
               <div className="flex items-center gap-2 flex-wrap">
                 <span className="font-mono text-xs text-cyan-400">
                   {item.range}
@@ -647,7 +658,7 @@ function Education() {
               </div>
               <h3 className="mt-2 text-slate-100 font-medium">{item.title}</h3>
               <p className="text-sm text-slate-500">{item.org}</p>
-            </div>
+            </article>
           )}
         />
       </div>
@@ -695,7 +706,7 @@ function Contact({ onOpenLegal }) {
   };
 
   return (
-    <section id="contacto" className="px-6 py-28 sm:py-36 bg-white/[0.015]">
+    <section id="contacto" aria-label="Contacto" className="px-6 py-28 sm:py-36 bg-white/[0.015]">
       <div className="max-w-5xl mx-auto">
         <Reveal>
           <SectionHeading
@@ -708,72 +719,78 @@ function Contact({ onOpenLegal }) {
 
         <div className="grid md:grid-cols-5 gap-8">
           <Reveal className="md:col-span-2 grid gap-4 content-start" delay={0.1}>
-            <a
-              href="mailto:javierferrandezquesada@gmail.com"
-              className="flex items-center gap-4 p-4 rounded-xl border border-white/10 bg-slate-900/40 hover:border-cyan-400/30 transition-colors"
-            >
-              <span className="flex h-10 w-10 items-center justify-center rounded-lg bg-cyan-400/10 text-cyan-400 shrink-0">
-                <Mail size={18} />
-              </span>
-              <div className="min-w-0">
-                <p className="text-sm text-slate-500">Email</p>
-                <p className="text-slate-200 text-sm truncate">
-                  javierferrandezquesada@gmail.com
-                </p>
-              </div>
-            </a>
+            <address className="not-italic grid gap-4">
+              <a
+                href="mailto:javierferrandezquesada@gmail.com"
+                aria-label="Enviar correo electrónico a javierferrandezquesada@gmail.com"
+                className="flex items-center gap-4 p-4 rounded-xl border border-white/10 bg-slate-900/40 hover:border-cyan-400/30 transition-colors"
+              >
+                <span className="flex h-10 w-10 items-center justify-center rounded-lg bg-cyan-400/10 text-cyan-400 shrink-0">
+                  <Mail size={18} aria-hidden="true" />
+                </span>
+                <div className="min-w-0">
+                  <span className="block text-sm text-slate-500">Email</span>
+                  <span className="block text-slate-200 text-sm truncate">
+                    javierferrandezquesada@gmail.com
+                  </span>
+                </div>
+              </a>
 
-            <div className="flex items-center gap-4 p-4 rounded-xl border border-white/10 bg-slate-900/40">
-              <span className="flex h-10 w-10 items-center justify-center rounded-lg bg-cyan-400/10 text-cyan-400 shrink-0">
-                <MapPin size={18} />
-              </span>
-              <div>
-                <p className="text-sm text-slate-500">Ubicación</p>
-                <p className="text-slate-200 text-sm">Cox, Alicante (España)</p>
+              <div className="flex items-center gap-4 p-4 rounded-xl border border-white/10 bg-slate-900/40">
+                <span className="flex h-10 w-10 items-center justify-center rounded-lg bg-cyan-400/10 text-cyan-400 shrink-0">
+                  <MapPin size={18} aria-hidden="true" />
+                </span>
+                <div>
+                  <span className="block text-sm text-slate-500">Ubicación</span>
+                  <span className="block text-slate-200 text-sm">Cox, Alicante (España)</span>
+                </div>
               </div>
-            </div>
 
-            <a
-              href="https://github.com/javierferrandezquesada"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex items-center gap-4 p-4 rounded-xl border border-white/10 bg-slate-900/40 hover:border-cyan-400/30 transition-colors"
-            >
-              <span className="flex h-10 w-10 items-center justify-center rounded-lg bg-cyan-400/10 text-cyan-400 shrink-0">
-                <Github size={18} />
-              </span>
-              <div>
-                <p className="text-sm text-slate-500">GitHub</p>
-                <p className="text-slate-200 text-sm">
-                  @javierferrandezquesada
-                </p>
-              </div>
-            </a>
+              <a
+                href="https://github.com/javierferrandezquesada"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Visitar el perfil de GitHub de Javier Ferrández"
+                className="flex items-center gap-4 p-4 rounded-xl border border-white/10 bg-slate-900/40 hover:border-cyan-400/30 transition-colors"
+              >
+                <span className="flex h-10 w-10 items-center justify-center rounded-lg bg-cyan-400/10 text-cyan-400 shrink-0">
+                  <Github size={18} aria-hidden="true" />
+                </span>
+                <div>
+                  <span className="block text-sm text-slate-500">GitHub</span>
+                  <span className="block text-slate-200 text-sm">
+                    @javierferrandezquesada
+                  </span>
+                </div>
+              </a>
 
-            <a
-              href="https://linkedin.com/in/tu-perfil"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex items-center gap-4 p-4 rounded-xl border border-white/10 bg-slate-900/40 hover:border-cyan-400/30 transition-colors"
-            >
-              <span className="flex h-10 w-10 items-center justify-center rounded-lg bg-cyan-400/10 text-cyan-400 shrink-0">
-                <Linkedin size={18} />
-              </span>
-              <div>
-                <p className="text-sm text-slate-500">LinkedIn</p>
-                <p className="text-slate-200 text-sm">Perfil profesional</p>
-              </div>
-            </a>
+              <a
+                href="https://linkedin.com/in/tu-perfil"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Visitar el perfil de LinkedIn de Javier Ferrández"
+                className="flex items-center gap-4 p-4 rounded-xl border border-white/10 bg-slate-900/40 hover:border-cyan-400/30 transition-colors"
+              >
+                <span className="flex h-10 w-10 items-center justify-center rounded-lg bg-cyan-400/10 text-cyan-400 shrink-0">
+                  <Linkedin size={18} aria-hidden="true" />
+                </span>
+                <div>
+                  <span className="block text-sm text-slate-500">LinkedIn</span>
+                  <span className="block text-slate-200 text-sm">Perfil profesional</span>
+                </div>
+              </a>
+            </address>
           </Reveal>
 
           <Reveal className="md:col-span-3" delay={0.18}>
             <form
               onSubmit={submit}
+              aria-label="Formulario de contacto"
               className="rounded-2xl border border-white/10 bg-slate-900/40 p-6 sm:p-8 grid gap-4"
             >
               {sent ? (
-                <div className="flex flex-col items-center justify-center text-center gap-3 py-10">
-                  <CheckCircle2 className="text-emerald-400" size={36} />
+                <div role="status" aria-live="polite" className="flex flex-col items-center justify-center text-center gap-3 py-10">
+                  <CheckCircle2 className="text-emerald-400" size={36} aria-hidden="true" />
                   <p className="text-slate-100 font-medium">
                     ¡Mensaje enviado!
                   </p>
@@ -785,11 +802,12 @@ function Contact({ onOpenLegal }) {
                 <>
                   <div className="grid sm:grid-cols-2 gap-4">
                     <div>
-                      <label className="text-xs text-slate-500 mb-1.5 block">
+                      <label htmlFor="contact-name" className="text-xs text-slate-500 mb-1.5 block">
                         Nombre
                       </label>
                       <input
                         required
+                        id="contact-name"
                         name="name"
                         type="text"
                         placeholder="Tu nombre"
@@ -797,11 +815,12 @@ function Contact({ onOpenLegal }) {
                       />
                     </div>
                     <div>
-                      <label className="text-xs text-slate-500 mb-1.5 block">
+                      <label htmlFor="contact-email" className="text-xs text-slate-500 mb-1.5 block">
                         Email
                       </label>
                       <input
                         required
+                        id="contact-email"
                         name="email"
                         type="email"
                         placeholder="tu@email.com"
@@ -810,11 +829,12 @@ function Contact({ onOpenLegal }) {
                     </div>
                   </div>
                   <div>
-                    <label className="text-xs text-slate-500 mb-1.5 block">
+                    <label htmlFor="contact-message" className="text-xs text-slate-500 mb-1.5 block">
                       Mensaje
                     </label>
                     <textarea
                       required
+                      id="contact-message"
                       name="message"
                       rows={4}
                       placeholder="Cuéntame en qué puedo ayudarte..."
@@ -822,35 +842,36 @@ function Contact({ onOpenLegal }) {
                     />
                   </div>
 
-                  <label className="flex items-start gap-2.5 text-xs text-slate-500 cursor-pointer select-none">
+                  <div className="flex items-start gap-2.5">
                     <input
                       type="checkbox"
+                      id="contact-privacy"
                       checked={accepted}
                       onChange={(e) => setAccepted(e.target.checked)}
                       required
-                      className="mt-0.5 h-4 w-4 rounded border-white/20 bg-white/5 accent-cyan-400"
+                      className="mt-0.5 h-4 w-4 rounded border-white/20 bg-white/5 accent-cyan-400 cursor-pointer"
                     />
-                    <span>
+                    <label htmlFor="contact-privacy" className="text-xs text-slate-500 cursor-pointer select-none">
                       Acepto la{" "}
                       <button
                         type="button"
                         onClick={() => onOpenLegal("privacidad")}
-                        className="text-cyan-400 hover:underline"
+                        className="text-cyan-400 hover:underline inline"
                       >
                         Política de Privacidad
                       </button>{" "}
                       y el tratamiento de mis datos personales conforme al
                       RGPD.
-                    </span>
-                  </label>
+                    </label>
+                  </div>
 
                   <button
                     type="submit"
                     disabled={!accepted || loading}
                     className="justify-self-start inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-cyan-400 to-blue-500 text-slate-950 font-medium hover:brightness-110 disabled:opacity-40 disabled:cursor-not-allowed transition-all"
                   >
-                    {loading ? "Enviando..." : "Enviar mensaje"}
-                    <ChevronRight size={16} />
+                    <span>{loading ? "Enviando..." : "Enviar mensaje"}</span>
+                    <ChevronRight size={16} aria-hidden="true" />
                   </button>
                 </>
               )}
@@ -895,6 +916,9 @@ function LegalModal({ type, onClose }) {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="legal-modal-title"
         className="fixed inset-0 z-[70] flex items-end sm:items-center justify-center bg-slate-950/70 backdrop-blur-sm p-4"
         onClick={onClose}
       >
@@ -907,15 +931,15 @@ function LegalModal({ type, onClose }) {
           className="w-full max-w-lg rounded-2xl border border-white/10 bg-slate-900 p-6 sm:p-8 max-h-[80vh] overflow-y-auto"
         >
           <div className="flex items-start justify-between gap-4 mb-4">
-            <h3 className="text-lg font-semibold text-slate-100">
+            <h2 id="legal-modal-title" className="text-lg font-semibold text-slate-100">
               {content.title}
-            </h3>
+            </h2>
             <button
               onClick={onClose}
-              className="text-slate-500 hover:text-slate-200 shrink-0"
-              aria-label="Cerrar"
+              className="text-slate-500 hover:text-slate-200 shrink-0 p-1 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-400/50"
+              aria-label="Cerrar ventana modal"
             >
-              <X size={18} />
+              <X size={18} aria-hidden="true" />
             </button>
           </div>
           <p className="text-sm text-slate-400 leading-relaxed whitespace-pre-line">
@@ -939,7 +963,7 @@ function Footer({ onOpenLegal }) {
           © {new Date().getFullYear()} Javier Ferrández Quesada. Diseñado y
           desarrollado con React &amp; Tailwind CSS.
         </p>
-        <div className="flex items-center gap-5">
+        <nav aria-label="Enlaces legales" className="flex items-center gap-5">
           <button
             onClick={() => onOpenLegal("privacidad")}
             className="hover:text-cyan-400 transition-colors"
@@ -952,7 +976,7 @@ function Footer({ onOpenLegal }) {
           >
             Aviso Legal
           </button>
-        </div>
+        </nav>
       </div>
     </footer>
   );
@@ -974,11 +998,13 @@ function CookieBanner() {
         animate={{ y: 0, opacity: 1 }}
         exit={{ y: 100, opacity: 0 }}
         transition={{ duration: 0.4, delay: 1 }}
+        role="region"
+        aria-label="Aviso de cookies"
         className="fixed bottom-4 left-1/2 -translate-x-1/2 z-[60] w-[calc(100%-1.5rem)] sm:w-auto"
       >
         <div className="flex flex-col sm:flex-row items-center gap-4 rounded-2xl border border-white/10 bg-slate-900/95 backdrop-blur-xl px-5 py-4 shadow-2xl">
           <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-cyan-400/10 text-cyan-400 shrink-0">
-            <Cookie size={16} />
+            <Cookie size={16} aria-hidden="true" />
           </span>
           <p className="text-xs text-slate-400 leading-relaxed max-w-sm">
             Este sitio utiliza cookies propias para mejorar tu experiencia de
@@ -996,11 +1022,21 @@ function CookieBanner() {
   );
 }
 
-
 // Componentes de iconos de marca (SVG)
 function Github({ size = 18, className = "" }) {
   return (
-    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
+    <svg
+      width={size}
+      height={size}
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      className={className}
+      aria-hidden="true"
+    >
       <path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4" />
       <path d="M9 18c-4.51 2-5-2-7-2" />
     </svg>
@@ -1009,7 +1045,18 @@ function Github({ size = 18, className = "" }) {
 
 function Linkedin({ size = 18, className = "" }) {
   return (
-    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
+    <svg
+      width={size}
+      height={size}
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      className={className}
+      aria-hidden="true"
+    >
       <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z" />
       <rect width="4" height="12" x="2" y="9" />
       <circle cx="4" cy="4" r="2" />
@@ -1045,7 +1092,7 @@ export default function App() {
   return (
     <div className="min-h-screen bg-slate-950 text-slate-200 antialiased selection:bg-cyan-400/20 selection:text-cyan-200 relative">
       {/* Fondo con resplandores ambientales suaves */}
-      <div className="pointer-events-none fixed inset-0 z-0 overflow-hidden">
+      <div className="pointer-events-none fixed inset-0 z-0 overflow-hidden" aria-hidden="true">
         <div className="absolute -top-40 left-1/2 -translate-x-1/2 w-[800px] h-[400px] rounded-full bg-cyan-500/10 blur-[150px]" />
         <div className="absolute top-1/3 -left-40 w-[500px] h-[500px] rounded-full bg-blue-600/5 blur-[160px]" />
         <div className="absolute bottom-10 right-0 w-[600px] h-[600px] rounded-full bg-cyan-600/5 blur-[160px]" />
