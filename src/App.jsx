@@ -144,7 +144,14 @@ function Navbar({ active }) {
 
   const scrollTo = (id) => {
     setOpen(false);
-    document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
+    requestAnimationFrame(() => {
+      setTimeout(() => {
+        const element = document.getElementById(id);
+        if (element) {
+          element.scrollIntoView({ behavior: "smooth" });
+        }
+      }, 50);
+    });
   };
 
   return (
