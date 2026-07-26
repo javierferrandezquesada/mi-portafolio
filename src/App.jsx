@@ -155,21 +155,20 @@ function Navbar({ active }) {
       className="fixed top-4 left-1/2 -translate-x-1/2 z-50 w-max max-w-[calc(100%-1.5rem)]"
     >
       <div
-        className={`flex items-center justify-between gap-4 sm:gap-6 rounded-2xl border border-white/10 px-3.5 sm:px-5 py-2.5 backdrop-blur-xl transition-colors ${
+        className={`flex h-12 items-center justify-between gap-4 sm:gap-6 rounded-2xl border border-white/10 px-4 sm:px-5 backdrop-blur-xl transition-colors ${
           scrolled ? "bg-slate-950/80" : "bg-slate-950/50"
         }`}
       >
         <button
           onClick={() => scrollTo("inicio")}
           aria-label="Ir al inicio del portafolio"
-          className="flex items-center gap-2 font-mono text-xs sm:text-sm text-slate-200 shrink-0 focus:outline-none focus:ring-2 focus:ring-cyan-400/50 rounded-lg"
+          className="flex items-center gap-2 font-mono text-xs text-slate-200 shrink-0 whitespace-nowrap focus:outline-none focus:ring-2 focus:ring-cyan-400/50 rounded-lg"
         >
-          <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-cyan-400/10 text-cyan-400 border border-cyan-400/20">
+          <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-cyan-400/10 text-cyan-400 border border-cyan-400/20 shrink-0">
             <Terminal size={14} aria-hidden="true" />
           </span>
           <span>
-            javier<span className="hidden sm:inline">ferrandez</span>
-            <span className="text-cyan-400">.</span>dev
+            javierferrandez<span className="text-cyan-400">.</span>dev
           </span>
         </button>
 
